@@ -26,6 +26,10 @@ __resource__  = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ).
 
 sys.path.append(__resource__)
 
+#get settings, not using them now, be can in the future
+SETTING_alsopurgetvseries = __addon__.getSetting( "AlsoPurgeTvSeries" )
+SETTING_purgexdaysback = __addon__.getSetting( "PurgexDaysBack" )
+
 #get actioncodes from https://github.com/xbmc/xbmc/blob/master/xbmc/guilib/Key.h
 ACTION_PREVIOUS_MENU = 10
 ACTION_SELECT_ITEM = 7
@@ -36,6 +40,12 @@ def log(txt):
         txt = txt.decode("utf-8")
     message = u'%s: %s' % (__addonid__, txt)
     xbmc.log(msg=message.encode("utf-8"), level=xbmc.LOGDEBUG)
+
+def lognotice(txt):
+    if isinstance (txt,str):
+        txt = txt.decode("utf-8")
+    message = u'%s: %s' % (__addonid__, txt)
+    xbmc.log(msg=message.encode("utf-8"), level=xbmc.LOGNOTICE)
 
 def normalize_string( text ):
     try: text = unicodedata.normalize( 'NFKD', _unicode( text ) ).encode( 'ascii', 'ignore' )
@@ -141,4 +151,6 @@ class MyClass(xbmcgui.Window):
         
 mydisplay = MyClass()
 mydisplay.doModal()
+
+lognotice("Test Setting: " + str(SETTING_alsopurgetvseries))
 del mydisplay
