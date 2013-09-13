@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon
-id="script.purgedwatchedmovies"
-version="1.0"
-name="Purge Watched Movies"
-provider-name="Rogier Helmer"
->
-<requires>
-	<import addon="xbmc.gui" version="2.11"/>
-	<import addon="xbmc.python" version="2.1.0"/>
-	<import addon="script.module.simplejson" version="2.0.10"/>
-</requires>
+<addon id="script.purgedwatchedmovies" version="1.0" name="Purge Watched Movies" provider-name="Rogier Helmer">
+	<requires>
+		<import addon="xbmc.gui" version="4.0.0"/>
+		<import addon="xbmc.python" version="2.1.0"/>
+		<import addon="script.module.simplejson" version="2.0.10"/>
+	</requires>
 
 <extension point="xbmc.python.script" library="addon.py">
     <provides>executable</provides>
 </extension>
-<extension point="xbmc.addon.metadata">
-<summary>Purge/Delete watched movies</summary>
-<description>Deletes wachted videos (Movies or Series) that have the status watched. It can be configured to only delete them after x days after being watched.</description>
-<platform>all</platform>
+
+<extension point="xbmc.addon.metadata" name="purgewatchedmoves.metadata">
+	<summary>Purge/Delete watched movies</summary>
+	<description>Deletes wachted videos (Movies or Series) that have the status watched. It can be configured to only delete them after x days after being watched.</description>
+		<website></website>
+		<source>https://github.com/rogierhelmer/purgewatchedmovies</source>
+		<forum></forum>
+		<email></email>    
+		<platform>all</platform>
 </extension>
 </addon>

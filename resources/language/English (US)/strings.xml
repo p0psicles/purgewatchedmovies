@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
 <!-- Addon Name -->
-<string id="40000">Purge Watched Movies</string>
+<string id="40000">General</string>
 <!-- Addon Settings -->
 <string id="40001">Would you like to also purge Series episodes?</string>
 <string id="40002">Only remove files after have been watched x days back</string>
