@@ -75,9 +75,9 @@ def addButon(self,text):
 class MyClass(xbmcgui.Window):
     def __init__(self):
         #self.addControl(xbmcgui.ControlImage(0,0,800,600, _resdir +'/Foto_Collin.png'))
-        self.strActionInfo = xbmcgui.ControlLabel(100, 120, 200, 200, '', 'font13', '0xFFFF00FF')
+        self.strActionInfo = xbmcgui.ControlLabel(100, 120, 600, 200, '', 'font13', '0xFFFF00FF')
         self.addControl(self.strActionInfo)
-        self.strActionInfo.setLabel('Push BACK to quit - A to reset text')
+        self.strActionInfo.setLabel('A list of all the Movies with the status watched')
         self.list = xbmcgui.ControlList(200, 150, 800, 800, selectedColor='100')
         self.addControl(self.list)
         self.count = 0
@@ -113,6 +113,7 @@ class MyClass(xbmcgui.Window):
             self.message("You selected : " + item.getLabel())
         if self.confirm == control:
             self.message("Deleting all watched movies!!!")
+            self.close()
         if self.btn_quit == control:
             self.close()
 
@@ -127,7 +128,7 @@ class MyClass(xbmcgui.Window):
         dialog.ok("You sure?",message)
 
     def listmovies(self):
-        json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "limits": { "start" : 0, "end": 300 }, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}')
+        json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "1"}, "limits": { "start" : 0, "end": 300 }, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}')
         json_query = unicode(json_query, 'utf-8', errors='ignore')
         json_response = simplejson.loads(json_query)
         log("### %s" % json_response)
