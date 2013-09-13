@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+<category label=”General”>
+<setting label="40001" type="bool" id="AlsoPurgeTvSeries" default="false" />
+<setting label="40002" type="number" id="PurgexDaysBack" default="30" />
+</category>
+</settings>
