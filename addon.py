@@ -41,7 +41,27 @@ def normalize_string( text ):
     try: text = unicodedata.normalize( 'NFKD', _unicode( text ) ).encode( 'ascii', 'ignore' )
     except: pass
     return text
- 
+
+def setupButtons(self,x,y,w,h,a="Vert",f="",nf=""):
+    self.numbut  = 0
+    self.butx = x
+    self.buty = y
+    self.butwidth = w
+    self.butheight = h
+    self.butalign = a
+    self.butfocus_img = f
+    self.butnofocus_img = nf
+
+def addButon(self,text):
+    if self.butalign == "Hori":
+        c =  xbmcgui.ControlButton(self.butx + (self.numbut * self.butwidth),self.buty,self.butwidth,self.butheight,text,self.butfocus_img,self.butnofocus_img)
+        self.addControl(c)
+    elif self.butalign == "Vert":
+        c = xbmcgui.ControlButton(self.butx ,self.buty + (self.numbut * self.butheight),self.butwidth,self.butheight,text,self.butfocus_img,self.butnofocus_img)
+        self.addControl(c)
+    self.numbut += 1
+    return c
+    
 class MyClass(xbmcgui.Window):
     def __init__(self):
         #self.addControl(xbmcgui.ControlImage(0,0,800,600, _resdir +'/Foto_Collin.png'))
@@ -70,13 +90,21 @@ class MyClass(xbmcgui.Window):
             
         self.list.addItems(self.MovieListTitles)
         self.setFocus(self.list)
+        setupButtons(self,10,10,300,30,"Vert")
+        self.confirm = addButon(self,"Delete All Movies from list")
+        self.btn_quit = addButon(self,"Quit")
 
         #self.yesnomessage())
+    
         
     def onControl(self, control):
-        if control == self.list:
+        if self.list == control:
             item = self.list.getSelectedItem()
-            self.message("You selected : " + item.getLabel())    
+            self.message("You selected : " + item.getLabel())
+        if self.confirm == control:
+            self.message("Deleting all watched movies!!!")
+        if self.btn_quit == control:
+            self.close()
 
     def onAction(self, action):
         if action == ACTION_PREVIOUS_MENU:
@@ -86,7 +114,7 @@ class MyClass(xbmcgui.Window):
 
     def message(self, message):
         dialog = xbmcgui.Dialog()
-        dialog.ok("Titel",message)
+        dialog.ok("You sure?",message)
 
     def listmovies(self):
         json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "limits": { "start" : 0, "end": 300 }, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}')
