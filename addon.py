@@ -8,6 +8,23 @@ if sys.version_info < (2, 7):
 else:
     import json as simplejson
 
+###Remote Debugging code###
+REMOTE_DBG = False 
+
+# append pydev remote debugger
+if REMOTE_DBG:
+    # Make pydev debugger works for auto reload.
+    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
+    try:
+        import pysrc.pydevd as pydevd
+    # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True)
+    except ImportError:
+        sys.stderr.write("Error: " +
+            "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+        sys.exit(1)
+### End of remote debugging
+
 #addon id - name of addon directory
 _id='script.purgewatchedmovies'
 #resources directory
@@ -95,7 +112,10 @@ class MyClass(xbmcgui.Window):
             current_show["art"] = movie[2]
             current_show["rating"] = movie[3]
             current_show["playcount"] = movie[4]
-
+            current_show["lastplayed"] = movie[5]
+            log(current_show["playcount"])
+            
+            
             self.MovieListTitles.append("Show: " + current_show["moviename"] + " | Physical Location:" + current_show["path"])
             
         self.list.addItems(self.MovieListTitles)
@@ -128,7 +148,7 @@ class MyClass(xbmcgui.Window):
         dialog.ok("You sure?",message)
 
     def listmovies(self):
-        json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "1"}, "limits": { "start" : 0, "end": 300 }, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}')
+        json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "greaterthan", "value": "0"}, "limits": { "start" : 0, "end": 300 }, "properties" : ["art", "rating", "thumbnail", "playcount", "file", "lastplayed"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}')
         json_query = unicode(json_query, 'utf-8', errors='ignore')
         json_response = simplejson.loads(json_query)
         log("### %s" % json_response)
@@ -141,7 +161,8 @@ class MyClass(xbmcgui.Window):
                 playcount = item['playcount']
                 path = item['file']
                 art = item['art']
-                self.MovieList.append( ( moviename , path, art, rating, playcount ) )
+                lastplayed = item['lastplayed']
+                self.MovieList.append( ( moviename , path, art, rating, playcount, lastplayed ) )
         log( "### list: %s" % self.MovieList )
         return self.MovieList
         
