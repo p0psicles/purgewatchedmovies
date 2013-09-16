@@ -1,6 +1,6 @@
 # import the XBMC libraries so we can use the controls and functions of XBMC
 from time import strptime, time, mktime, localtime
-import os, sys, re, socket, urllib, unicodedata
+import os, sys, re, socket, urllib, unicodedata, datetime
 import xbmc, xbmcgui, xbmcaddon, xbmcvfs
 
 if sys.version_info < (2, 7):
@@ -54,7 +54,7 @@ sys.path.append(__resource__)
 
 #get settings, not using them now, be can in the future
 SETTING_alsopurgetvseries = __addon__.getSetting( "AlsoPurgeTvSeries" )
-SETTING_purgexdaysback = __addon__.getSetting( "PurgexDaysBack" )
+SETTING_purgexdaysback_sec = int(__addon__.getSetting( "PurgexDaysBack" )) * 24 * 3600
 
 #get actioncodes from https://github.com/xbmc/xbmc/blob/master/xbmc/guilib/Key.h
 ACTION_PREVIOUS_MENU = 10
@@ -132,7 +132,9 @@ class MyClass(xbmcgui.Window):
             current_show["lastplayed"] = movie[5]
             log(current_show["playcount"])
             
-            self.MovieListTitles.append("Show: " + current_show["moviename"] + " | Physical Location:" + current_show["path"])
+            if mktime(strptime(current_show["lastplayed"], "%Y-%m-%d %H:%M:%S")) < mktime(datetime.datetime.now().timetuple()) - SETTING_purgexdaysback_sec:
+                log("### %s" % current_show["lastplayed"])
+                self.MovieListTitles.append("Show: " + current_show["moviename"] + " | Physical Location:" + current_show["path"])
         
         
         #Start with listing the Tv-series if enabled in settings
@@ -154,7 +156,9 @@ class MyClass(xbmcgui.Window):
                 current_episode["file"] = episode[5]
                 log("Playcount:::" + str(current_episode["playcount"]))
                 if current_episode["playcount"] > 0:
-                    self.MovieListTitles.append("Show: " + current_episode["showtitle"] + " - Episode Title:" + current_episode["title"] + " | File:" + current_episode["file"])
+                    if mktime(strptime(current_episode["lastplayed"], "%Y-%m-%d %H:%M:%S")) < mktime(datetime.datetime.now().timetuple()) - SETTING_purgexdaysback_sec:
+                        log("### %s" % current_episode["lastplayed"])
+                        self.MovieListTitles.append("Show: " + current_episode["showtitle"] + " - Episode Title:" + current_episode["title"] + " | File:" + current_episode["file"])
             
         #Add the found list of Movie and Tv-show titles
         self.list.addItems(self.MovieListTitles)
